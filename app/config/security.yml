@@ -1,0 +1,32 @@
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        in_memory:
+            memory:
+                users:
+                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
+                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        wsse_secured:
+            pattern:   ^/api/.*
+            wsse:
+                realm: "Secured API" #identifies the set of resources to which the authentication information will apply (WWW-Authenticate)
+                profile: "UsernameToken" #WSSE profile (WWW-Authenticate)
+                lifetime: 300 #lifetime of nonce
+                encoder: #digest algorithm
+                    algorithm: sha1
+                    encodeHashAsBase64: true
+                    iterations: 1
+
+    access_control:
+        - { path: ^/api/items, role: ROLE_USER }

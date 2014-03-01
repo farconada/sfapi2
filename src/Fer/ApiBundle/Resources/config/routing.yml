@@ -1,0 +1,3 @@
+fer_api_homepage:
+    pattern:  /items
+    defaults: { _controller: FerApiBundle:Item:list }

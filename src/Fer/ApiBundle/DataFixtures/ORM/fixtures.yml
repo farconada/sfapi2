@@ -1,0 +1,4 @@
+Fer\ApiBundle\Entity\Item:
+  item{0..100}:
+    name: <firstName()> <lastName()>
+    description: <username()>

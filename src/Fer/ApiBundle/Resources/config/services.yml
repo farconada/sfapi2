@@ -1,0 +1,22 @@
+parameters:
+  fer_api.item_repository.class: Fer\ApiBundle\Entity\ItemRepository
+  fer_api.item_repository.factory_argument: Fer\ApiBundle\Entity\Item
+
+services:
+  fer_api.item_repository:
+    class:           %fer_api.item_repository.class%
+    factory_service: doctrine.orm.entity_manager
+    factory_method:  getRepository
+    arguments:
+        - %fer_api.item_repository.factory_argument%
+
+  fer_api.response:
+    class: Symfony\Component\HttpFoundation\Response
+    arguments:
+      - ''
+      - 200
+      - Content-Type: 'application/json'
+        X-Header-ToDo-Version: '1.0'
+        Access-Control-Allow-Origin: '*'
+        Access-Control-Allow-Methods: '*'
+        Access-Control-Allow-Headers: 'X-WSSE'
