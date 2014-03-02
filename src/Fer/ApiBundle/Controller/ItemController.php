@@ -2,13 +2,19 @@
 
 namespace Fer\ApiBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializerInterface;
 use Fer\ApiBundle\Entity\ItemRepository;
+use Fer\ApiBundle\Entity\Item;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+/**
+ * @RouteResource("Item")
+ */
 class ItemController
 {
     private $repository;
@@ -31,10 +37,21 @@ class ItemController
         $this->response   = $response;
         $this->serializer = $serializer;
     }
-    public function listAction()
+
+    public function cgetAction()
     {
         $items = $this->repository->findAll();
         $this->response->setContent($this->serializer->serialize($items, 'json'));
+        return $this->response;
+    }
+
+    /**
+     * @ParamConverter("item", converter="fos_rest.request_body")
+     */
+    public function postAction(Item $item, ConstraintViolationListInterface $validationErrors)
+    {
+
+        $this->response->setContent($this->serializer->serialize($item, 'json'));
         return $this->response;
     }
 }

@@ -1,3 +1,4 @@
-fer_api_homepage:
-    pattern:  /items
-    defaults: { _controller: FerApiBundle:Item:list }
+items:
+    type:     rest
+    resource: Fer\ApiBundle\Controller\ItemController
+    name_prefix: api_

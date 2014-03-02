@@ -1,5 +1,5 @@
 fer_api:
     resource: "@FerApiBundle/Resources/config/routing.yml"
+    type : rest
     prefix:   /api/
-
 
