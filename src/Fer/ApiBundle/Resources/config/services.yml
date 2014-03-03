@@ -1,6 +1,7 @@
 parameters:
-  fer_api.item_repository.class: Fer\ApiBundle\Entity\ItemRepository
-  fer_api.item_repository.factory_argument: Fer\ApiBundle\Entity\Item
+  fer_api.item_repository.class: Fer\AppDomain\Repository\ItemRepository
+  fer_api.item_service.class: Fer\AppDomain\Service\ItemService
+  fer_api.item_repository.factory_argument: Fer\AppDomain\Entity\Item
 
 services:
   fer_api.item_repository:
@@ -9,6 +10,11 @@ services:
     factory_method:  getRepository
     arguments:
         - %fer_api.item_repository.factory_argument%
+
+  fer_api.item_service:
+    class: %fer_api.item_service.class%
+    arguments:
+      - @fer_api.item_repository
 
   fer_api.response:
     class: Symfony\Component\HttpFoundation\Response

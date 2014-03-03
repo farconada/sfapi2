@@ -1,6 +1,6 @@
 <?php
 
-namespace Fer\ApiBundle\Entity;
+namespace Fer\AppDomain\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Item
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Fer\ApiBundle\Entity\ItemRepository")
+ * @ORM\Entity(repositoryClass="Fer\AppDomain\Repository\ItemRepository")
  */
 class Item
 {
@@ -24,17 +24,20 @@ class Item
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255)
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
+    public function __construct($name) {
+        $this->setName($name);
+    }
 
     /**
      * Get id

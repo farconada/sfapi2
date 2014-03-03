@@ -59,6 +59,13 @@ doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
+        mappings:
+            appdomain:
+              mapping: true
+              type: annotation
+              dir:        %kernel.root_dir%/../src/Fer/AppDomain/
+              prefix:     Fer\AppDomain
+              alias:      FerAppDomain
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -78,8 +85,8 @@ fos_rest:
         include_format:       false
     body_converter:
         enabled: true
-        validate: true
-        validation_errors_argument: validationErrors # This is the default value
+#        validate: true
+#        validation_errors_argument: validationErrors # This is the default value
 
 sensio_framework_extra:
     request: { converters: true }

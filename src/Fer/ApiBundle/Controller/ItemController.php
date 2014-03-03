@@ -2,56 +2,75 @@
 
 namespace Fer\ApiBundle\Controller;
 
+use Fer\AppDomain\Service\ItemServiceInterface;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializerInterface;
-use Fer\ApiBundle\Entity\ItemRepository;
-use Fer\ApiBundle\Entity\Item;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
+use Fer\AppDomain\Entity\ItemDTO;
+use FOS\RestBundle\Controller\Annotations as RESTRoute;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * @RouteResource("Item")
+ * @RESTRoute\RouteResource("Item")
  */
 class ItemController
 {
-    private $repository;
+    private $itemService;
 
-    private $templating;
+    private $serializer;
 
     private $response;
 
     /**
      * @DI\InjectParams({
-     *     "repository" = @DI\Inject("fer_api.item_repository"),
-     *     "templating" = @DI\Inject("templating"),
+     *     "itemService" = @DI\Inject("fer_api.item_service"),
      *     "response"   = @DI\Inject("fer_api.response"),
      *     "serializer" = @DI\Inject("jms_serializer")
      * })
      */
-    public function __construct(ItemRepository $repository, EngineInterface $templating, Response $response, SerializerInterface $serializer) {
-        $this->repository = $repository;
-        $this->templating = $templating;
+    public function __construct(ItemServiceInterface $itemService, Response $response, SerializerInterface $serializer) {
+        $this->itemService = $itemService;
         $this->response   = $response;
         $this->serializer = $serializer;
     }
 
     public function cgetAction()
     {
-        $items = $this->repository->findAll();
+        $items = $this->itemService->findAll();
         $this->response->setContent($this->serializer->serialize($items, 'json'));
+        return $this->response;
+    }
+
+    /**
+     * @RESTRoute\Post("/items")
+     * @ParamConverter("item", converter="fos_rest.request_body")
+     */
+    public function postAction(ItemDTO $item)
+    {
+        $itemEntity = $this->itemService->create($item);
+        $this->response->setContent($this->serializer->serialize($itemEntity, 'json'));
         return $this->response;
     }
 
     /**
      * @ParamConverter("item", converter="fos_rest.request_body")
      */
-    public function postAction(Item $item, ConstraintViolationListInterface $validationErrors)
+    public function putAction(ItemDTO $item)
     {
+        $itemEntity = $this->itemService->update($item);
+        $this->response->setContent($this->serializer->serialize($itemEntity, 'json'));
+        return $this->response;
+    }
 
-        $this->response->setContent($this->serializer->serialize($item, 'json'));
+    public function deleteAction($itemId) {
+        $this->itemService->delete($itemId);
+        $this->response->setContent($this->serializer->serialize(array('msg' => 'deleted'), 'json'));
+        return $this->response;
+    }
+
+    public function getAction($itemId) {
+        $itemEntity = $this->itemService->find($itemId);
+        $this->response->setContent($this->serializer->serialize($itemEntity, 'json'));
         return $this->response;
     }
 }
